@@ -15,7 +15,7 @@ public enum Operators {
 
     Operators(char type) {
         this.type = type;
-        this.precedence = 5;
+        this.precedence = 0;
         this.associativity = "";
     }
     Operators(char type, int precedence, String associativity) {

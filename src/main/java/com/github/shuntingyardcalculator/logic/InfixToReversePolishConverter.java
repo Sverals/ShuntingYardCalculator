@@ -51,10 +51,11 @@ public class InfixToReversePolishConverter {
                 while (!this.operatorStack.getStack().isEmpty()) {
                     if ((currOpPres < topOpPres) ||
                        ((currOpPres == topOpPres) && currOp.getAssociativity().equals("LEFT"))) {
-                            this.outputString.add(String.valueOf(currOp.getType()));
-                            currOp =this.convertStringToOperator(this.operatorStack.getTopAndPop().charAt(0));
-                            currOpPres = currOp.getPrecedence();
+                            topOp = this.convertStringToOperator(this.operatorStack.getTopAndPop().charAt(0));
+                            this.outputString.add(String.valueOf(topOp.getType()));
+                            topOpPres = topOp.getPrecedence();
                     } else {
+                        this.outputString.add(String.valueOf(currentChar));
                         inFixStringBuilder.deleteCharAt(0);
                         break;
                     }

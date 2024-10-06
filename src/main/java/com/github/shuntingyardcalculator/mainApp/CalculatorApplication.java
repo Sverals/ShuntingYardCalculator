@@ -24,7 +24,7 @@ public class CalculatorApplication extends Application {
 
     public static void main(String[] args) {
         InfixToReversePolishConverter converter = new InfixToReversePolishConverter();
-        System.out.println(converter.convert("10x(20+40+60)+80"));
+        System.out.println(converter.convert("10x80^80+8"));
         //launch();
     }
 }
