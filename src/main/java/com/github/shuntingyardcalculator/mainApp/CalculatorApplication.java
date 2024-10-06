@@ -1,5 +1,6 @@
 package com.github.shuntingyardcalculator.mainApp;
 
+import com.github.shuntingyardcalculator.logic.InfixToReversePolishConverter;
 import com.github.shuntingyardcalculator.ui.CalculatorController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,8 @@ public class CalculatorApplication extends Application {
 
 
     public static void main(String[] args) {
-        launch();
+        InfixToReversePolishConverter converter = new InfixToReversePolishConverter();
+        System.out.println(converter.convert("10x(20+40+60)+80"));
+        //launch();
     }
 }

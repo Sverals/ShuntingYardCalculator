@@ -34,4 +34,9 @@ public class Stack {
     public void setStack(ArrayList<String> stack) {
         this.stack = stack;
     }
+
+    @Override
+    public String toString() {
+        return stack.toString();
+    }
 }
