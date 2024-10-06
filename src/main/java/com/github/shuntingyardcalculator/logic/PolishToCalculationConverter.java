@@ -40,7 +40,7 @@ public class PolishToCalculationConverter {
             return Double.parseDouble(num1) + Double.parseDouble(num2);
         }
         if (currentOperation == Operators.MINUS) {
-            return Double.parseDouble(num1) - Double.parseDouble(num2);
+            return Double.parseDouble(num2) - Double.parseDouble(num1);
         }
         if (currentOperation == Operators.MULTIPLY) {
             return Double.parseDouble(num1) * Double.parseDouble(num2);
