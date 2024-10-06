@@ -25,9 +25,6 @@ public class CalculatorApplication extends Application {
 
 
     public static void main(String[] args) {
-        InfixToReversePolishConverter converter = new InfixToReversePolishConverter();
-        ArrayList<String> values = converter.convert("√9");
-        System.out.println(PolishToCalculationConverter.calculateValue(values));
-        //launch();
+        launch();
     }
 }
