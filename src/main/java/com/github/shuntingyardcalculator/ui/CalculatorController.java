@@ -199,14 +199,17 @@ public class CalculatorController implements Initializable {
     private void processEnterRequest() {
         try {
             double testValueIfValid = Double.parseDouble(outputLabel.getText());
-        } catch (NumberFormatException e) {
-            outputLabel.setText("");
+        } catch (NumberFormatException exception) {
+            if (outputLabel.getText().charAt(0) == 'I') {
+                outputLabel.setText("");
+            }
         }
         try {
             InfixToReversePolishConverter converter = new InfixToReversePolishConverter();
             ArrayList<String> polishConversion = converter.convert(outputLabel.getText());
             outputLabel.setText(String.valueOf(PolishToCalculationConverter.calculateValue(polishConversion)));
         } catch (Exception e) {
+
             outputLabel.setText("Invalid Expression: " + outputLabel.getText());
         }
     }
