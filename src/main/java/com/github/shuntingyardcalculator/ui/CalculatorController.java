@@ -1,5 +1,7 @@
 package com.github.shuntingyardcalculator.ui;
 
+import com.github.shuntingyardcalculator.logic.InfixToReversePolishConverter;
+import com.github.shuntingyardcalculator.logic.PolishToCalculationConverter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -30,27 +32,23 @@ public class CalculatorController implements Initializable {
     private AnchorPane mainAnchor;
 
     public static final HashMap<KeyCode, String> KEY_TO_STRING_HASHMAP = new HashMap<>() {{
-        put(KeyCode.DIGIT0, "0");
         put(KeyCode.DIGIT1, "1");
         put(KeyCode.DIGIT2, "2");
         put(KeyCode.DIGIT3, "3");
         put(KeyCode.DIGIT4, "4");
         put(KeyCode.DIGIT7, "7");
         put(KeyCode.DIGIT8, "8");
-        put(KeyCode.DIGIT9, "9");
-        put(KeyCode.NUMPAD0, "0");
         put(KeyCode.NUMPAD1, "1");
         put(KeyCode.NUMPAD2, "2");
         put(KeyCode.NUMPAD3, "3");
         put(KeyCode.NUMPAD4, "4");
         put(KeyCode.NUMPAD7, "7");
         put(KeyCode.NUMPAD8, "8");
-        put(KeyCode.NUMPAD9, "9");
     }};
 
     public static final HashMap<String, String> OPERATOR_TO_STRING_HASHMAP = new HashMap<>() {{
         put("%", "%");
-        put("^", "²");
+        put("^", "^");
         put("*", "x");
         put("+", "+");
         put("-", "-");
@@ -58,6 +56,10 @@ public class CalculatorController implements Initializable {
         put(".", ".");
         put("6", "6");
         put("5", "5");
+        put("(", "(");
+        put(")", ")");
+        put("9", "9");
+        put("0", "0");
     }};
 
     public CalculatorController() {
@@ -144,7 +146,7 @@ public class CalculatorController implements Initializable {
     private void addListenersToNonDigitOutputButtons(Button currentButton) {
         String currentButtonValue = currentButton.getText();
         char buttonChar = currentButtonValue.charAt(0);
-        if (currentButtonValue.equals("x²") || buttonChar == 'U' || buttonChar == 'C' || buttonChar == '=') {
+        if (currentButtonValue.equals("^") || buttonChar == 'U' || buttonChar == 'C' || buttonChar == '=') {
             return;
         }
         if (!Character.isDigit(buttonChar)) { //prevents non text buttons being added to output
@@ -178,10 +180,10 @@ public class CalculatorController implements Initializable {
                break;
            default: break;
        }
-       if (currentButtonValue.equals("x²")) { //adds power to output
+       if (currentButtonValue.equals("^")) { //adds power to output
            scrollPane.setHvalue(1.0);
            currentButton.setOnAction(event -> {
-           outputLabel.setText(outputLabel.getText() + "²");
+           outputLabel.setText(outputLabel.getText() + "^");
            });
        }
     }
@@ -195,6 +197,18 @@ public class CalculatorController implements Initializable {
     }
 
     private void processEnterRequest() {
+        try {
+            double testValueIfValid = Double.parseDouble(outputLabel.getText());
+        } catch (NumberFormatException e) {
+            outputLabel.setText("");
+        }
+        try {
+            InfixToReversePolishConverter converter = new InfixToReversePolishConverter();
+            ArrayList<String> polishConversion = converter.convert(outputLabel.getText());
+            outputLabel.setText(String.valueOf(PolishToCalculationConverter.calculateValue(polishConversion)));
+        } catch (Exception e) {
+            outputLabel.setText("Invalid Expression: " + outputLabel.getText());
+        }
     }
 
     private void processClearRequest() {

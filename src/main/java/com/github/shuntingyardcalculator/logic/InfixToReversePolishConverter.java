@@ -14,29 +14,55 @@ public class InfixToReversePolishConverter {
         this.operatorStack = new Stack();
     }
 
-    public String convert(String inFixString) {
+    public ArrayList<String> convert(String inFixString) {
+
         StringBuilder inFixStringBuilder = new StringBuilder(inFixString);
+
+        if (containsOnlySqrt(inFixStringBuilder)) {
+            outputString.add(inFixStringBuilder.toString());
+            return outputString;
+        }
+        char firstCharacter = inFixStringBuilder.charAt(0);
+        char lastCharacter = '@';
         while (!inFixStringBuilder.isEmpty()) {
             char currentChar = inFixStringBuilder.charAt(0);
+            if (currentChar == '√' || currentChar == '.') {
+                currentChar = inFixStringBuilder.charAt(1);
+            }
+            if (!this.operatorStack.getStack().isEmpty()) { //runs negative number loop if last character is minus and current character is minus
+                if (currentChar == Operators.MINUS.getCharVersion() && lastCharacter == Operators.MINUS.getCharVersion()) {
+                    firstCharacter = currentChar;
+                }
+            }
+            lastCharacter = currentChar;
             if (Character.isDigit(currentChar)) { //Step 1: output operand if symbol
                 String numberFound = this.getNumberAndRemove(inFixStringBuilder);
                 if (!numberFound.isEmpty()) {
                     this.outputString.add(numberFound);
                 }
-            } else if (currentChar == Operators.LEFTPARENTHESIS.getCharVersion()) { //Step 2: push left parenthesis to stack
+            } else if (firstCharacter == Operators.MINUS.getCharVersion()) { //add negative if first
+                inFixStringBuilder.deleteCharAt(0);
+                String numberFound = this.getNumberAndRemove(inFixStringBuilder);
+                if (!numberFound.isEmpty()) {
+                    this.outputString.add("-" + numberFound);
+                }
+                firstCharacter = '@';
+            }
+            else if (currentChar == Operators.LEFTPARENTHESIS.getCharVersion()) { //Step 2: push left parenthesis to stack
                 operatorStack.pushToTop(String.valueOf(currentChar));
                 inFixStringBuilder.deleteCharAt(0);
             } else if (currentChar == Operators.RIGHTPARENTHESIS.getCharVersion()) { // Step 3:If the incoming symbol is a right parenthesis: discard the right parenthesis, pop and print the stack symbols until you see a left parenthesis. Pop the left parenthesis and discard it.
                 inFixStringBuilder.deleteCharAt(0); //discard right parenthesis
-                System.out.println(inFixStringBuilder);
                 this.processRightParenthesis();
             } else if (isOperator(currentChar) && (this.operatorStack.getStack().isEmpty() || this.operatorStack.getTopValue().equals(Operators.LEFTPARENTHESIS.getStringVersion()))) { //step 4: If the incoming symbol is an operator and the stack is empty or contains a left parenthesis on top, push the incoming operator onto the stack.
                 this.operatorStack.pushToTop(String.valueOf(currentChar));
                 inFixStringBuilder.deleteCharAt(0);
             } else if (isOperator(currentChar)) {
-                Operators currOp = this.convertStringToOperator(currentChar);
-                Operators topOp = this.convertStringToOperator(this.operatorStack.getTopValue().charAt(0));
+                Operators currOp = convertStringToOperator(currentChar);
+                Operators topOp = convertStringToOperator(this.operatorStack.getTopValue().charAt(0));
+                assert currOp != null;
                 int currOpPres = currOp.getPrecedence();
+                assert topOp != null;
                 int topOpPres = topOp.getPrecedence();
 
                 if ((currOpPres > topOpPres) ||
@@ -67,11 +93,24 @@ public class InfixToReversePolishConverter {
         if (!this.operatorStack.getStack().isEmpty()) {
             outputString.addAll(this.operatorStack.getStack());
         }
-        return outputString.toString();
+        return outputString;
+    }
+
+    private boolean containsOnlySqrt(StringBuilder stringBuilder) {
+        boolean sqrtFound = false;
+        for (int i = 0; i < stringBuilder.length(); i++) {
+            if (InfixToReversePolishConverter.isOperator(stringBuilder.charAt(i))) {
+                return false;
+            }
+            if (stringBuilder.charAt(i) == '√') {
+                sqrtFound = true;
+            }
+        }
+        return sqrtFound;
     }
 
 
-    public Operators convertStringToOperator(char input) {
+    public static Operators convertStringToOperator(char input) {
         for (Operators operator : Operators.values()) {
             if (operator.getCharVersion() == input) {
                 return operator;
@@ -90,7 +129,6 @@ public class InfixToReversePolishConverter {
         return false;
     }
     public void processRightParenthesis() {
-        System.out.println(this.operatorStack.getStack());
             while (this.operatorStack.getTopValue().charAt(0) != Operators.LEFTPARENTHESIS.getCharVersion()) { //loop until left parenthesis
 
                 String currentOperator = this.operatorStack.getTopAndPop(); //adds operators until left parenthesis
@@ -110,7 +148,7 @@ public class InfixToReversePolishConverter {
     public String getNumberAndRemove(StringBuilder input) {
         for (int i = 0; i < input.length(); i++) {
             char currentChar = input.charAt(i);
-            if ((!Character.isDigit(currentChar) && currentChar != '.')) {
+            if ((!Character.isDigit(currentChar) && currentChar != '.' && currentChar != '√')) {
                 String toReturn = input.substring(0, i);
                 input.replace(0, i, "");
                 return toReturn;

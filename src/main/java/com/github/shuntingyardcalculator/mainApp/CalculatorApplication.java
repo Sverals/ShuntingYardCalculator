@@ -1,6 +1,7 @@
 package com.github.shuntingyardcalculator.mainApp;
 
 import com.github.shuntingyardcalculator.logic.InfixToReversePolishConverter;
+import com.github.shuntingyardcalculator.logic.PolishToCalculationConverter;
 import com.github.shuntingyardcalculator.ui.CalculatorController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CalculatorApplication extends Application {
     @Override
@@ -24,7 +26,8 @@ public class CalculatorApplication extends Application {
 
     public static void main(String[] args) {
         InfixToReversePolishConverter converter = new InfixToReversePolishConverter();
-        System.out.println(converter.convert("10x80^80+8"));
+        ArrayList<String> values = converter.convert("√9");
+        System.out.println(PolishToCalculationConverter.calculateValue(values));
         //launch();
     }
 }
