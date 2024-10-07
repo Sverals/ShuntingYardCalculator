@@ -37,13 +37,11 @@ public class CalculatorController implements Initializable {
         put(KeyCode.DIGIT3, "3");
         put(KeyCode.DIGIT4, "4");
         put(KeyCode.DIGIT7, "7");
-        put(KeyCode.DIGIT8, "8");
         put(KeyCode.NUMPAD1, "1");
         put(KeyCode.NUMPAD2, "2");
         put(KeyCode.NUMPAD3, "3");
         put(KeyCode.NUMPAD4, "4");
         put(KeyCode.NUMPAD7, "7");
-        put(KeyCode.NUMPAD8, "8");
     }};
 
     public static final HashMap<String, String> OPERATOR_TO_STRING_HASHMAP = new HashMap<>() {{
@@ -54,6 +52,7 @@ public class CalculatorController implements Initializable {
         put("-", "-");
         put("/", "÷");
         put(".", ".");
+        put("8", "8");
         put("6", "6");
         put("5", "5");
         put("(", "(");
@@ -200,6 +199,10 @@ public class CalculatorController implements Initializable {
         try {
             double testValueIfValid = Double.parseDouble(outputLabel.getText());
         } catch (NumberFormatException exception) {
+            if (outputLabel.getText().isEmpty()) {
+                outputLabel.setText("");
+                return;
+            }
             if (outputLabel.getText().charAt(0) == 'I') {
                 outputLabel.setText("");
             }
